@@ -3,8 +3,13 @@ require "rails/railtie"
 module Multiverse
   class Railtie < Rails::Railtie
     generators do
-      require "rails/generators/active_record/migration"
-      ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
+      if ActiveRecord::VERSION::MAJOR >= 5
+        require "rails/generators/active_record/migration"
+        ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
+      else
+        require "rails/generators/migration"
+        Rails::Generators::Migration.prepend(Multiverse::Generators::MigrationTemplate)
+      end
 
       require "rails/generators/active_record/model/model_generator"
       ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::ModelGenerator)
@@ -15,6 +20,7 @@ module Multiverse
         task :load_config do
           ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
           ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
+          ActiveRecord::Migrator.migrations_paths = [Multiverse.migrate_path] if ActiveRecord::VERSION::MAJOR < 5
         end
 
         namespace :test do

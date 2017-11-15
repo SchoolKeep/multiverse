@@ -18,7 +18,13 @@ module Multiverse
     end
 
     def parent_class_name
-      db ? "#{db.camelize}Record" : "ApplicationRecord"
+      if db
+        "#{db.camelize}Record"
+      elsif ActiveRecord::VERSION::MAJOR >= 5
+        "ApplicationRecord"
+      else
+        "ActiveRecord::Base"
+      end
     end
 
     def record_class
