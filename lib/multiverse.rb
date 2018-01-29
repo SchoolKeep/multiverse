@@ -32,7 +32,7 @@ module Multiverse
     end
 
     def migrate_path
-      "#{db_dir}/migrate"
+      Rails.application.paths["#{db_dir}/migrate"].to_a.presence || ["#{db_dir}/migrate"]
     end
 
     def env(environment)

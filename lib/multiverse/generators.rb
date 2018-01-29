@@ -8,7 +8,7 @@ module Multiverse
 
     module Migration
       def db_migrate_path
-        Multiverse.migrate_path
+        Multiverse.migrate_path.first
       end
     end
   end
