@@ -11,7 +11,7 @@ module Multiverse
     end
 
     def db_dir
-      db_dir = "#{Rails.application.config.paths["db"].first}/#{db}"
+      db_dir = "db/#{db}"
       abort "Unknown DB: #{db}" unless Dir.exist?(db_dir)
       db_dir
     end
@@ -21,7 +21,7 @@ module Multiverse
     end
 
     def migrate_path
-      "#{db_dir}/migrate"
+      Rails.application.paths["#{db_dir}/migrate"].to_a.presence || ["#{db_dir}/migrate"]
     end
   end
 end
