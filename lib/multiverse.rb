@@ -11,9 +11,19 @@ module Multiverse
     end
 
     def db_dir
-      db_dir = "db/#{db}"
+      db_dir = db ? "db/#{db}" : "db"
       abort "Unknown DB: #{db}" unless Dir.exist?(db_dir)
       db_dir
+    end
+
+    def record_class
+      if db
+        record_class = parent_class_name.safe_constantize
+        abort "Missing model: #{parent_class_name}" unless record_class
+        record_class
+      else
+        ActiveRecord::Base
+      end
     end
 
     def parent_class_name
